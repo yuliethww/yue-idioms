@@ -74,6 +74,12 @@ main{padding:22px;max-width:980px;animation:fade .25s}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center}
 .ts{background:var(--sage-d);color:#fffaf0;padding:9px 16px;border-radius:99px;font-weight:700;animation:fade .2s;box-shadow:var(--shadow)}.ts.e{background:var(--danger)}
 #bnav{display:none}
+body.auth{background:linear-gradient(160deg,var(--sage-l),var(--bg) 65%)}
+.auth #side,.auth .top,.auth #bnav{display:none!important}.auth .shell{display:block}
+.auth main{max-width:none;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login{background:var(--card);border-radius:26px;padding:38px 28px;max-width:420px;width:100%;text-align:center;box-shadow:var(--shadow);border-top:8px solid var(--sage)}
+.login .lg{font-size:3rem}.login h1{margin:6px 0 8px}.login p{color:var(--soft);margin:0 0 22px}
+.login button{width:100%;margin-top:10px;padding:12px 16px}
 @media(max-width:760px){
 .shell{display:block}#side{display:none}.stats{grid-template-columns:repeat(2,1fr)}.tools{grid-template-columns:1fr 1fr}.tools>:first-child{grid-column:1/-1}
 .top,main{padding-left:14px;padding-right:14px}.pri span{display:none}
@@ -89,7 +95,7 @@ main{padding-bottom:90px}#toast{bottom:90px}}
 <main id="main"><div class="spin"></div></main></div></div>
 <nav id="bnav"></nav><div id="modal"></div><div id="toast"></div>
 <script>
-const IC={home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',cards:'<rect x="3" y="7" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 012 2v12"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',plus:'<path d="M12 5v14M5 12h14"/>',more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',moon:'<path d="M20 14A8 8 0 1110 4a7 7 0 0010 10z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',check:'<path d="M5 12l5 5 9-10"/>',back:'<path d="M15 5l-7 7 7 7"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',undo:'<path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"/>'};
+const IC={home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',cards:'<rect x="3" y="7" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 012 2v12"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',plus:'<path d="M12 5v14M5 12h14"/>',more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',moon:'<path d="M20 14A8 8 0 1110 4a7 7 0 0010 10z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',check:'<path d="M5 12l5 5 9-10"/>',back:'<path d="M15 5l-7 7 7 7"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',undo:'<path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"/>'};
 const ic=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 const COLORS=["#9caf88","#c9b27c","#d4a59a","#8fa8a3","#b9a0c4","#a3b57c"];
 const LANGS=[["Español","Español"],["Inglés","English"],["Italiano","Italiano"],["Ruso","Русский"],["Cantonés","粵語"],["Mandarín","普通话"],["Francés","Français"],["Alemán","Deutsch"],["Japonés","日本語"],["Coreano","한국어"],["Portugués","Português"]];
@@ -106,38 +112,54 @@ const plural=(n,a,b)=>`${n} ${n==1?a:b}`;
 
 function toast(m,e){const d=document.createElement('div');d.className='ts'+(e?' e':'');d.textContent=m;$('#toast').append(d);setTimeout(()=>d.remove(),2600)}
 let chain=Promise.resolve(),lsOk=true;
+const lkey=()=>S.user?'lib:'+S.user.uid:'lib';
+const readLocal=k=>{try{const l=localStorage.getItem(k);return l?JSON.parse(l):null}catch(e){return null}};
+const fix=()=>{S.lib.folders=S.lib.folders||[];S.lib.folders.forEach(f=>{f.words=f.words||[];f.native=f.native||f.name})};
 function save(){
   S.lib.updatedAt=Date.now();const snap=JSON.parse(JSON.stringify(S.lib));
-  try{localStorage.setItem('lib',JSON.stringify(snap))}catch(x){lsOk=false}
-  if(S.cloud&&S.ref){chain=chain.then(()=>S.ref.set(snap)).catch(x=>{S.err=(x&&(x.code||x.message))||'error';toast('No se pudo guardar en tu cuenta: '+S.err,1);render()})}
+  try{localStorage.setItem(lkey(),JSON.stringify(snap))}catch(x){lsOk=false}
+  if(S.user){
+    if(S.blocked){toast('No se guardó en tu cuenta porque no se pudo leer. Recarga la página.',1);return}
+    const u=S.user.uid;chain=chain.then(()=>FB.save(u,snap)).catch(x=>{S.err=(x&&(x.code||x.message))||'error';toast('No se pudo guardar en tu cuenta: '+S.err,1);render()})}
   else if(!lsOk)toast('No se pudo guardar: este navegador bloquea el almacenamiento',1)
 }
+async function onUser(u){
+  S.user=u?{uid:u.uid,name:u.displayName||'',email:u.email||''}:null;S.err='';S.blocked=false;S.menu=null;S.modal=null;S.deck=[];S.fid=null;S.view='home';
+  if(u){S.guest=false;S.loading=true;render();let cloud=null;
+    try{cloud=await FB.load(u.uid)}catch(e){S.err=e.code||e.message||'error';S.blocked=true;toast('No se pudo leer tu cuenta: '+S.err,1)}
+    if(cloud&&cloud.folders)S.lib=cloud;
+    else{const loc=readLocal('lib:'+u.uid)||(S.err?null:readLocal('lib'));S.lib=loc&&loc.folders?loc:{folders:[]};
+      if(!S.err&&S.lib.folders.length)setTimeout(save,0)}}
+  else S.lib=S.guest?(readLocal('lib')||{folders:[]}):{folders:[]};
+  fix();S.loading=false;render()}
+function login(){FB.signIn().catch(e=>{if(e&&/popup-closed|cancelled-popup/.test(e.code))return;toast('No se pudo iniciar sesi\u00f3n: '+((e&&(e.code||e.message))||'error'),1)})}
+function guest(){S.guest=true;S.view='home';S.fid=null;S.lib=readLocal('lib')||{folders:[]};fix();render()}
+function account(){
+  if(S.user)ask('\u00bfCerrar sesi\u00f3n? Tus palabras siguen guardadas en tu cuenta.','Cerrar sesi\u00f3n',()=>FB.signOut());
+  else{S.guest=false;S.lib={folders:[]};render()}}
+function loginView(){return `<div class="login"><div class="lg">\ud83c\udf3f</div><h1>Mi rinc\u00f3n de palabras</h1><p>Guarda y repasa el vocabulario de tus idiomas en un lugar tranquilo.</p><button class="pri" onclick="login()">Entrar con Google</button><button class="gh" onclick="guest()">Usar sin cuenta</button><p style="font-size:.82rem;margin:16px 0 0">Con Google tus palabras se guardan en tu cuenta. Sin cuenta, solo en este navegador.</p>${S.fbFail?'<p class="err">No se pudo cargar Firebase. Revisa tu conexi\u00f3n.</p>':''}</div>`}
 async function init(){
   let th;try{th=localStorage.getItem('th')}catch(e){}if(th)document.documentElement.dataset.theme=th;
   render();
-  let loc=null;try{const l=localStorage.getItem('lib');if(l)loc=JSON.parse(l)}catch(e){}
-  try{if(typeof claude==='undefined')throw 0;const db=await claude.use('db'),u=await claude.use('user');
-    if(!db||!u)S.err='sin sesión';
-    else{const id=await u.id();if(!id)S.err='sin sesión';else{S.ref=db.collection('data/users/'+id).doc('library');S.cloud=true;
-      try{const s=await S.ref.get();if(s.exists&&s.data().folders)S.lib=s.data()}catch(e){S.err=(e&&(e.code||e.message))||'error de lectura'}}}}catch(e){S.err=e?(e.code||e.message||'error'):''}
-  if(loc&&loc.folders&&(!S.lib.folders.length||(loc.updatedAt||0)>(S.lib.updatedAt||0))){S.lib=loc;if(S.cloud)setTimeout(save,0)}
-  S.lib.folders.forEach(f=>{f.words=f.words||[];f.native=f.native||f.name});
-  S.loading=false;render();
-}
+  const ok=await Promise.race([new Promise(r=>{if(window.FB)r(1);else addEventListener('fb-ready',()=>r(1),{once:true})}),new Promise(r=>setTimeout(()=>r(0),8000))]);
+  if(!ok){S.fbFail=true;S.loading=false;render();return}
+  FB.onUser(onUser)}
 function toggleTheme(){const r=document.documentElement,dk=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dk?'light':'dark';try{localStorage.setItem('th',r.dataset.theme)}catch(e){}}
 function go(v,fid){Object.assign(S,{view:v,fid:fid||null,q:'',lq:'',tag:'',sub:'',st:'all',menu:null});$('#gq').value='';render();scrollTo(0,0)}
 function render(){
+  document.body.classList.toggle('auth',!S.user&&!S.guest);
   const N=[['home','Inicio','home'],['cards','Repasar','cards'],['trash','Papelera','trash']];
   const on=v=>S.view===v&&!(v==='home'&&S.fid)?'on':'';
   $('#side').innerHTML=`<div class="logo">🌿 Mi rincón</div>`+N.map(([v,l,i])=>`<button class="nv ${on(v)}" onclick="go('${v}')">${ic(i)}${l}</button>`).join('')+
    `<div class="sec">Idiomas</div>`+fl().map(f=>`<button class="nv ${S.fid===f.id?'on':''}" style="--c:${f.color}" onclick="go('lang','${f.id}')"><span class="dot"></span>${esc(f.native)}</button>`).join('')+
-   `<button class="nv" onclick="openLang()">${ic('plus')}Nuevo idioma</button><div style="flex:1"></div><button class="nv" onclick="toggleTheme()">${ic('moon')}Tema claro / oscuro</button><div class="pr" style="padding:6px 10px">${S.cloud&&!S.err?'☁️ Guardado en tu cuenta':'Guardado solo en este navegador'}${S.err?`<br><small>(${esc(S.err)})</small>`:''}</div>`;
-  $('#bnav').innerHTML=N.map(([v,l,i])=>`<button class="${on(v)}" onclick="go('${v}')">${ic(i)}${l}</button>`).join('')+`<button onclick="toggleTheme()">${ic('moon')}Tema</button>`;
+   `<button class="nv" onclick="openLang()">${ic('plus')}Nuevo idioma</button><div style="flex:1"></div><button class="nv" onclick="toggleTheme()">${ic('moon')}Tema claro / oscuro</button><div class="pr" style="padding:6px 10px">${S.user?'\u2601\ufe0f '+esc(S.user.email||S.user.name):S.guest?'Solo en este navegador':'Sin sesi\u00f3n'}${S.err?`<br><small>(${esc(S.err)})</small>`:''}</div><button class="nv" onclick="account()">${ic('user')}${S.user?'Cerrar sesi\u00f3n':'Iniciar sesi\u00f3n'}</button>`;
+  $('#bnav').innerHTML=N.map(([v,l,i])=>`<button class="${on(v)}" onclick="go('${v}')">${ic(i)}${l}</button>`).join('')+`<button onclick="toggleTheme()">${ic('moon')}Tema</button><button onclick="account()">${ic('user')}Cuenta</button>`;
   renderMain();
 }
 function renderMain(){
   const m=$('#main');
   if(S.loading){m.innerHTML='<div class="spin" role="status" aria-label="Cargando"></div>';return}
+  if(!S.user&&!S.guest){m.innerHTML=loginView();return}
   if(S.q.trim())m.innerHTML=results();
   else if(S.view==='lang'&&fF(S.fid)&&!fF(S.fid).deletedAt){m.innerHTML=langView(fF(S.fid));fill(fF(S.fid))}
   else if(S.view==='trash')m.innerHTML=trashView();
@@ -211,6 +233,7 @@ function renderModal(){
   $('#modal').innerHTML=h;const f=$('#modal [autofocus]');if(f)f.focus()}
 const lopts=sel=>LANGS.map(([n,t])=>`<option value="${n}" ${n===sel?'selected':''}>${t} (${n})</option>`).join('')+(LANGS.some(l=>l[0]===sel)?'':`<option selected>${esc(sel)}</option>`);
 function openWord(fid,wid){
+  if(!S.user&&!S.guest){toast('Inicia sesi\u00f3n primero');return}
   if(!fl().length){toast('Primero crea un idioma');openLang();return}
   const f=fF(fid)||fF(S.fid)&&!fF(S.fid).deletedAt&&fF(S.fid)||fl()[0],w=wid&&fW(f,wid);
   const def=LANGS.some(l=>l[0]===f.name)?f.name:LANGS[0][0];
@@ -251,7 +274,7 @@ function saveWord(){
   if(m.wid){const old=S.lib.folders.find(x=>fW(x,m.wid)),w=fW(old,m.wid);Object.assign(w,o);if(old!==f){old.words=old.words.filter(x=>x!==w);f.words.unshift(w)}}
   else f.words.unshift({id:uid(),at:Date.now(),learned:false,...o});
   S.modal=null;renderModal();save();renderMain();toast(m.wid?'Cambios guardados':'Palabra guardada')}
-function openLang(id){const f=id&&fF(id);S.menu=null;S.modal={t:'lang',fid:id,err:'',d:f?{name:f.name,native:f.native,color:f.color}:{name:'',native:'',color:COLORS[fl().length%COLORS.length]}};renderModal()}
+function openLang(id){if(!S.user&&!S.guest){toast('Inicia sesi\u00f3n primero');return}const f=id&&fF(id);S.menu=null;S.modal={t:'lang',fid:id,err:'',d:f?{name:f.name,native:f.native,color:f.color}:{name:'',native:'',color:COLORS[fl().length%COLORS.length]}};renderModal()}
 function langModal(){const m=S.modal,d=m.d;
   return `<div class="ov" onmousedown="if(event.target===this){S.modal=null;renderModal()}"><div class="md sm" role="dialog" aria-label="Idioma"><h2>${m.fid?'Editar idioma':'Nuevo idioma'}</h2>
   <label>Nombre (en español)</label><input id="l_name" list="ll" value="${esc(d.name)}" placeholder="ej. Italiano" onchange="langAuto()" autofocus><datalist id="ll">${LANGS.map(l=>`<option value="${l[0]}">`).join('')}</datalist>
@@ -266,4 +289,17 @@ function saveLang(){lcollect();const m=S.modal,d=m.d,name=d.name.trim(),nat=d.na
   if(m.fid){Object.assign(fF(m.fid),{name,native:nat,color:d.color})}else S.lib.folders.push({id:uid(),name,native:nat,color:d.color,words:[]});
   S.modal=null;renderModal();save();render();toast(m.fid?'Idioma actualizado':'Idioma creado')}
 init();
-</script></body></html>
+</script><script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyBs0AKrwnDMLm2MN8HU5XSSgQ8Jknm_dVE",authDomain:"yue-idioms.firebaseapp.com",projectId:"yue-idioms",storageBucket:"yue-idioms.firebasestorage.app",messagingSenderId:"954747699159",appId:"1:954747699159:web:1b659074ca1b5aedc7d592"});
+const auth=getAuth(app),db=getFirestore(app),prov=new GoogleAuthProvider();
+window.FB={onUser:cb=>onAuthStateChanged(auth,cb),
+ signIn:async()=>{try{await signInWithPopup(auth,prov)}catch(e){if(e.code==='auth/popup-blocked')return signInWithRedirect(auth,prov);throw e}},
+ signOut:()=>signOut(auth),
+ load:async uid=>{const s=await getDoc(doc(db,'users',uid));return s.exists()?s.data():null},
+ save:(uid,data)=>setDoc(doc(db,'users',uid),data)};
+dispatchEvent(new Event('fb-ready'));
+</script>
+</body></html>
