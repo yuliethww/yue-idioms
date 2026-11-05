@@ -1,0 +1,874 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Yue Songs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a quiet Japanese stationery shelf. Seigaiha waves and a pale sun behind the library, hanko seal in the brand, kanji as small section labels. */
+:root{
+  --bg:#F8FAFD;
+  --surface:#FFFFFF;
+  --surface-2:#EEEAF8;
+  --soft-blue:#DCEAF7;
+  --head:#355C7D;
+  --fg:#29384A;
+  --muted:#586A80;
+  --line:#D3DEEC;
+  --accent:#6C9BCF;
+  --on-accent:#14202E;
+  --teal:#648F89;
+  --sage:#A8C3B0;
+  --lav:#C8BCE8;
+  --hl:#C8BCE8;
+  --hl-fg:#29384A;
+  --good:#3F6B65;
+  --danger:#B83B4B;
+  --wave:rgba(108,155,207,.22);
+  --sun:rgba(200,188,232,.38);
+  --display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A26;--surface:#1B2636;--surface-2:#262A45;--soft-blue:#22334A;--head:#A9CBEE;--fg:#E4ECF6;--muted:#9DAFC4;--line:#2D3B50;
+    --accent:#7FAAD9;--on-accent:#0E1926;--teal:#7FB2AA;--sage:#6E8F7B;--lav:#8A7EC4;
+    --hl:#5A4F95;--hl-fg:#F2EFFC;--good:#8FC8B8;--danger:#FF8D99;
+    --wave:rgba(127,170,217,.16);--sun:rgba(138,126,196,.22);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A26;--surface:#1B2636;--surface-2:#262A45;--soft-blue:#22334A;--head:#A9CBEE;--fg:#E4ECF6;--muted:#9DAFC4;--line:#2D3B50;
+  --accent:#7FAAD9;--on-accent:#0E1926;--teal:#7FB2AA;--sage:#6E8F7B;--lav:#8A7EC4;
+  --hl:#5A4F95;--hl-fg:#F2EFFC;--good:#8FC8B8;--danger:#FF8D99;
+  --wave:rgba(127,170,217,.16);--sun:rgba(138,126,196,.22);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--fg);font:400 1rem/1.6 var(--body);
+  padding-block:18px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.app{max-width:1080px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);color:var(--head);margin:0;text-wrap:balance;letter-spacing:.005em}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-size:.76rem;letter-spacing:.03em}
+.jp{font-family:var(--display);font-weight:500}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;margin-bottom:28px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:12px;color:var(--head);text-decoration:none;font:800 1.3rem/1 var(--display);letter-spacing:.03em}
+.hanko{display:inline-grid;place-items:center;width:30px;height:30px;border:2px solid var(--teal);border-radius:5px;color:var(--teal);font:800 1.05rem/1 var(--display);transform:rotate(-4deg)}
+.sync{font:500 .7rem/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger)}
+.btn.danger:hover{border-color:var(--danger)}
+.btn.small{min-height:34px;padding:0 14px;font-size:.9rem}
+
+/* Library */
+.hero{position:relative;padding:28px 0 8px;margin-bottom:12px;isolation:isolate}
+.hero::before{ /* pale sun */
+  content:"";position:absolute;z-index:-1;right:-40px;top:-30px;width:210px;height:210px;border-radius:50%;
+  background:radial-gradient(circle,var(--sun) 0 62%,transparent 63%);
+}
+.hero::after{ /* seigaiha waves */
+  content:"";position:absolute;z-index:-1;left:0;right:0;bottom:-6px;height:44px;opacity:.9;
+  background:
+    radial-gradient(circle at 50% 100%,transparent 0 30%,var(--wave) 31% 34%,transparent 35% 52%,var(--wave) 53% 56%,transparent 57% 72%,var(--wave) 73% 76%,transparent 77%) 0 0/44px 22px repeat-x,
+    radial-gradient(circle at 50% 100%,transparent 0 30%,var(--wave) 31% 34%,transparent 35% 52%,var(--wave) 53% 56%,transparent 57% 72%,var(--wave) 73% 76%,transparent 77%) 22px 11px/44px 22px repeat-x;
+  -webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent);
+}
+.eyebrow{font:500 .72rem/1 var(--mono);color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.eyebrow .jp{font-size:.95rem;letter-spacing:.2em;margin-right:8px;text-transform:none}
+.lib-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.lib-head h1{font-size:clamp(2.1rem,6vw,3.3rem);font-weight:800;line-height:1.05}
+.lib-head p{margin-top:10px}
+.tools{display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+input[type="search"],input[type="text"],select,textarea{width:100%;min-height:44px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+textarea{resize:vertical;line-height:1.55}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:34px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#0E1926}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0E1926}}
+.notice{padding:12px 16px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);margin-bottom:20px;font-size:.92rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:30px 16px}
+.card{display:flex;flex-direction:column;gap:12px;color:inherit;text-decoration:none;min-width:0}
+.card-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.card h3{font-size:1.08rem;font-weight:800;line-height:1.25;overflow-wrap:anywhere}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:8px}
+
+/* Sleeve + record */
+.art{position:relative;aspect-ratio:1.14/1;width:100%}
+.sleeve{
+  position:absolute;left:0;top:0;height:100%;aspect-ratio:1;z-index:1;border-radius:4px;overflow:hidden;
+  display:grid;place-items:center;background-size:cover;background-position:center;
+  background-image:linear-gradient(145deg,hsl(var(--hue) 34% 54%),hsl(calc(var(--hue) + 24) 38% 34%));
+  box-shadow:0 0 0 1px var(--line),0 12px 24px -14px rgba(41,56,74,.55);
+}
+.sleeve .initial{font:800 clamp(2.4rem,12vw,4.2rem)/1 var(--display);color:rgba(255,255,255,.94)}
+.disc{
+  position:absolute;right:0;top:5%;height:90%;aspect-ratio:1;border-radius:50%;z-index:0;
+  background:repeating-radial-gradient(circle at center,#1f2a3a 0 2px,#111a27 2px 4px);
+  box-shadow:0 0 0 1px var(--line);transform:translateX(-10%);transition:transform .25s ease;
+}
+.disc-label{position:absolute;inset:34%;border-radius:50%;background:hsl(var(--hue) 36% 68%)}
+.card:hover .disc,.card:focus-visible .disc{transform:translateX(0)}
+.skeleton .sleeve{background:var(--surface-2);box-shadow:0 0 0 1px var(--line)}
+
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--surface-2);font:500 .7rem/1.7 var(--mono);text-transform:uppercase;letter-spacing:.07em}
+.tag.ok{background:transparent;border:1px solid var(--teal);color:var(--good)}
+
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:44px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;background:linear-gradient(180deg,var(--surface),var(--bg))}
+.empty h2{font-size:1.6rem}
+.empty p{max-width:46ch}
+.empty .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.empty-sm{padding:24px 0;color:var(--muted)}
+
+/* Song view */
+.back{display:inline-block;margin-bottom:22px;color:var(--muted);text-decoration:none;font-weight:500}
+.back:hover{color:var(--head)}
+.song{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+@media (min-width:820px){.song{grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:44px}}
+.song-side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.song-side .art{max-width:340px}
+.song-side h2{font-size:clamp(1.7rem,4vw,2.2rem);font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.side-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;max-width:340px}
+.meter{height:6px;border-radius:99px;background:var(--soft-blue);overflow:hidden;max-width:340px}
+.meter>div{height:100%;background:var(--teal);width:0;transition:width .3s ease}
+.song-main{min-width:0}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:8px 16px 10px;cursor:pointer;font-weight:500;color:var(--muted);white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.25}
+.tab .jp{font-size:.78rem;letter-spacing:.18em;opacity:.85}
+.tab[aria-selected="true"]{color:var(--head);border-bottom-color:var(--teal);font-weight:700}
+
+.lyrics-bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.lyrics{max-width:62ch;font-size:1.15rem;line-height:1.85;padding-left:18px;border-left:2px solid var(--lav)}
+.lyrics .line{margin:0}
+.lyrics .gap{height:1.2em}
+mark.vocab{background:var(--hl);color:var(--hl-fg);padding:0 .25em;border-radius:4px;cursor:pointer}
+.gloss{display:inline-block;margin:0 .35em;padding:0 .6em;border-radius:6px;background:var(--soft-blue);font-size:.82rem;color:var(--muted);vertical-align:.1em}
+.blank{display:inline-block;height:1.1em;vertical-align:-.15em;border:0;border-bottom:2px solid var(--teal);background:var(--surface-2);border-radius:3px 3px 0 0;cursor:pointer;margin:0 .1em}
+
+/* Words */
+.word-form{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:24px;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+@media (min-width:640px){.word-form{grid-template-columns:1fr 1fr auto}.word-form .note-in{grid-column:1 / 3}}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.word{display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);border-top:3px solid var(--lav);min-width:0}
+.word.done{border-top-color:var(--sage)}
+.word h4{font-size:1.3rem;font-weight:800;overflow-wrap:anywhere}
+.word .meaning{margin-top:2px}
+.word .note{margin-top:6px;font-size:.9rem;color:var(--muted);font-style:italic}
+.word-actions{display:flex;gap:8px;flex-wrap:wrap}
+.icon-btn{min-height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:.88rem;font-weight:500}
+.icon-btn[aria-pressed="true"]{border-color:var(--teal);color:var(--good);font-weight:700}
+.icon-btn.danger{color:var(--danger)}
+
+/* Practice */
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.flash{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;min-height:250px;padding:26px;border-radius:16px;border:1px solid var(--line);background:var(--surface);cursor:pointer;text-align:center;position:relative;overflow:hidden}
+.flash .big{font:800 clamp(1.8rem,6vw,2.8rem)/1.15 var(--display);color:var(--head);overflow-wrap:anywhere}
+.flash.flipped{background:var(--sage);color:#1C2B2A;border-color:var(--sage)}
+.flash.flipped .big{color:#1C2B2A}
+.flash .hint{font:500 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;opacity:.75}
+.flash-controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.flash-controls .grow{flex:1;min-width:8px}
+.check{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;color:var(--muted)}
+.check input{width:18px;height:18px;accent-color:var(--teal)}
+
+/* Dialogs */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(20,32,46,.5);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet{width:100%;max-width:560px;margin:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.sheet h2{font-size:1.55rem}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font:500 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.cover-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.cover-prev{width:96px;height:96px;border-radius:4px;background-size:cover;background-position:center;display:grid;place-items:center;font:800 2rem var(--display);color:rgba(255,255,255,.94);
+  background-image:linear-gradient(145deg,hsl(var(--hue) 34% 54%),hsl(calc(var(--hue) + 24) 38% 34%));box-shadow:0 0 0 1px var(--line)}
+.cover-btns{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.sheet-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--head);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:500;max-width:calc(100vw - 32px)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <a class="brand" href="#library"><span class="hanko jp" aria-hidden="true">月</span><span>Yue Songs</span></a>
+    <span class="sync" id="sync"></span>
+  </header>
+
+  <main>
+    <section id="view-library">
+      <div class="hero">
+        <p class="eyebrow"><span class="jp" aria-hidden="true">歌の図書館</span>Song library</p>
+        <div class="lib-head">
+          <div>
+            <h1>Your collection</h1>
+            <p class="muted" id="lib-stats"></p>
+          </div>
+          <button class="btn primary" id="btn-new" type="button">+ New folder</button>
+        </div>
+      </div>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search songs, artists or words" aria-label="Search">
+        <div class="chips" id="chips" role="group" aria-label="Filter by language"></div>
+      </div>
+      <div class="notice" id="notice" hidden></div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" hidden>
+        <h2 id="empty-title">Your shelf is empty</h2>
+        <p class="muted" id="empty-text">Create one folder per song, paste the lyrics, and save the new words you want to learn.</p>
+        <div class="row" id="empty-actions">
+          <button class="btn primary" type="button" id="btn-new-2">Create my first folder</button>
+          <button class="btn" type="button" id="btn-sample">See a sample folder</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-song" hidden>
+      <a class="back" href="#library">← All folders</a>
+      <div class="song">
+        <aside class="song-side">
+          <div id="s-art"></div>
+          <div>
+            <h2 id="s-title"></h2>
+            <p class="muted" id="s-artist"></p>
+          </div>
+          <div class="tags" id="s-tags"></div>
+          <div>
+            <div class="meter" aria-hidden="true"><div id="s-bar"></div></div>
+            <p class="mono muted" id="s-meter-text" style="margin-top:8px"></p>
+          </div>
+          <div class="side-actions">
+            <button class="btn" type="button" id="btn-learned"></button>
+            <button class="btn ghost" type="button" id="btn-edit">Edit folder</button>
+            <button class="btn ghost danger" type="button" id="btn-del">Delete folder</button>
+          </div>
+        </aside>
+
+        <div class="song-main">
+          <div class="tabs" role="tablist">
+            <button class="tab" role="tab" type="button" data-tab="lyrics"><span class="jp" aria-hidden="true">歌詞</span><span>Lyrics</span></button>
+            <button class="tab" role="tab" type="button" data-tab="words" id="tab-words-btn"><span class="jp" aria-hidden="true">言葉</span><span id="tab-words-label">Words</span></button>
+            <button class="tab" role="tab" type="button" data-tab="practice"><span class="jp" aria-hidden="true">練習</span><span>Practice</span></button>
+          </div>
+
+          <div id="tab-lyrics" role="tabpanel">
+            <div class="lyrics-bar">
+              <p class="muted" style="font-size:.92rem">Select a word or phrase in the lyrics to save it. Tap a highlighted word to see its meaning.</p>
+              <button class="btn small" type="button" id="btn-pick" hidden></button>
+            </div>
+            <div id="lyrics-body"></div>
+          </div>
+
+          <div id="tab-words" role="tabpanel" hidden>
+            <form class="word-form" id="word-form" autocomplete="off">
+              <div class="field">
+                <label for="w-term">Word or phrase</label>
+                <input id="w-term" type="text" maxlength="120" placeholder="lantern">
+              </div>
+              <div class="field">
+                <label for="w-meaning">Meaning</label>
+                <input id="w-meaning" type="text" maxlength="200" placeholder="a portable light">
+              </div>
+              <div class="field" style="justify-content:flex-end">
+                <button class="btn primary" type="submit">Save word</button>
+              </div>
+              <div class="field note-in">
+                <label for="w-note">Note or example (optional)</label>
+                <input id="w-note" type="text" maxlength="300" placeholder="A sentence where you would use it">
+              </div>
+            </form>
+            <div class="words" id="word-list"></div>
+          </div>
+
+          <div id="tab-practice" role="tabpanel" hidden>
+            <div class="modes">
+              <button class="chip" type="button" data-practice="cards" aria-pressed="true">Flashcards</button>
+              <button class="chip" type="button" data-practice="cloze" aria-pressed="false">Fill the gaps</button>
+            </div>
+            <div id="practice-body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="modal" hidden>
+  <form class="sheet" id="song-form" role="dialog" aria-modal="true" aria-labelledby="modal-title" autocomplete="off">
+    <h2 id="modal-title">New folder</h2>
+    <div class="field">
+      <label for="f-title">Song title</label>
+      <input id="f-title" type="text" maxlength="120" required>
+    </div>
+    <div class="field">
+      <label for="f-artist">Artist</label>
+      <input id="f-artist" type="text" maxlength="120">
+    </div>
+    <div class="field">
+      <label for="f-lang">Language</label>
+      <input id="f-lang" type="text" maxlength="40" list="lang-list" placeholder="English">
+      <datalist id="lang-list">
+        <option value="English"><option value="Spanish"><option value="Japanese"><option value="Korean">
+        <option value="Chinese"><option value="Portuguese"><option value="French"><option value="Italian"><option value="German">
+      </datalist>
+    </div>
+    <div class="field">
+      <label>Folder image</label>
+      <div class="cover-row">
+        <div class="cover-prev" id="f-prev"></div>
+        <div class="cover-btns">
+          <label class="btn small" for="f-cover" style="cursor:pointer">Choose image</label>
+          <input class="visually-hidden" id="f-cover" type="file" accept="image/*">
+          <button class="btn small ghost" type="button" id="f-cover-remove">Remove image</button>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-lyrics">Lyrics</label>
+      <textarea id="f-lyrics" rows="8" placeholder="Paste the lyrics here"></textarea>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn ghost" type="button" id="f-cancel">Cancel</button>
+      <button class="btn primary" type="submit">Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="overlay" id="confirm" hidden>
+  <div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">Delete this folder?</h2>
+    <p class="muted" id="confirm-text"></p>
+    <div class="sheet-actions">
+      <button class="btn ghost" type="button" id="c-cancel">Cancel</button>
+      <button class="btn danger" type="button" id="c-ok">Yes, delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s) => document.querySelector(s);
+const LS_KEY = 'songlib-v1';
+const state = {
+  songs: [], loaded: false, mode: 'pending', slow: false,
+  tab: 'lyrics', lang: '', q: '', pick: '',
+  practice: 'cards', deckPending: true, cardIdx: 0, flipped: false,
+  cloze: 'vocab', allShown: false, revealed: new Set(),
+  editing: null, coverData: '', editHue: 230
+};
+let col = null;
+let queue = Promise.resolve();
+let lastFocus = null;
+let toastTimer = null;
+
+/* ---------- helpers ---------- */
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const uid = (p) => p + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3);
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+/* covers stay inside the palette: hues 190 (teal) to 280 (lavender) */
+const hueOf = (n) => 190 + (Math.abs(Math.round(Number(n) || 0)) % 90);
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+const currentId = () => { const m = /^#song-([a-z0-9]+)$/.exec(location.hash); return m ? m[1] : null; };
+const current = () => { const id = currentId(); return id ? state.songs.find((s) => s.id === id) : null; };
+
+/* ---------- saving ---------- */
+function loadLocal() {
+  try { const raw = localStorage.getItem(LS_KEY); state.songs = raw ? JSON.parse(raw) : []; } catch (e) { state.songs = []; }
+}
+function saveLocal() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state.songs)); } catch (e) { toast('Could not save in this browser.'); }
+}
+function enqueue(fn) {
+  queue = queue.catch(() => {}).then(fn).catch((e) => { console.error(e); toast('Could not save. Please try again.'); });
+  return queue;
+}
+function putSong(song) {
+  song.updatedAt = Date.now();
+  const i = state.songs.findIndex((s) => s.id === song.id);
+  if (i < 0) state.songs = [song, ...state.songs];
+  else { state.songs = state.songs.slice(); state.songs[i] = song; }
+  render();
+  const body = clone(song); delete body.id;
+  if (col) enqueue(() => col.doc(song.id).set(body)); else saveLocal();
+}
+function removeSong(id) {
+  state.songs = state.songs.filter((s) => s.id !== id);
+  render();
+  if (col) enqueue(() => col.doc(id).delete()); else saveLocal();
+}
+function mutate(fn) {
+  const s = current(); if (!s) return;
+  const c = clone(s); fn(c); putSong(c);
+}
+
+/* ---------- components ---------- */
+function artEl(song) {
+  const hue = hueOf(song.hue);
+  const sleeve = h('div', { class: 'sleeve', role: 'img', 'aria-label': 'Cover for ' + song.title });
+  sleeve.style.setProperty('--hue', hue);
+  if (song.cover) sleeve.style.backgroundImage = 'url("' + song.cover + '")';
+  else sleeve.append(h('span', { class: 'initial', text: (song.title || '?').trim().charAt(0).toUpperCase() }));
+  const disc = h('div', { class: 'disc' }, h('span', { class: 'disc-label' }));
+  disc.style.setProperty('--hue', hue);
+  return h('div', { class: 'art' }, disc, sleeve);
+}
+function cardEl(s) {
+  const words = s.words || [];
+  const done = words.filter((w) => w.learned).length;
+  return h('a', { class: 'card', href: '#song-' + s.id },
+    artEl(s),
+    h('div', { class: 'card-body' },
+      h('h3', { text: s.title }),
+      h('p', { class: 'muted', text: s.artist || 'Unknown artist' }),
+      h('div', { class: 'card-meta' },
+        s.language ? h('span', { class: 'tag', text: s.language }) : null,
+        h('span', { class: 'mono muted', text: done + '/' + words.length + ' words' }),
+        s.status === 'learned' ? h('span', { class: 'tag ok', text: 'Learned' }) : null)));
+}
+function skeletonEl() {
+  return h('div', { class: 'card' }, h('div', { class: 'art skeleton' }, h('div', { class: 'sleeve' })));
+}
+
+/* ---------- views ---------- */
+function render() {
+  const id = currentId();
+  const song = id ? state.songs.find((s) => s.id === id) : null;
+  if (id && !song && state.loaded) { location.hash = '#library'; return; }
+  if (song) { $('#view-library').hidden = true; $('#view-song').hidden = false; renderSong(song); }
+  else { $('#view-song').hidden = true; $('#view-library').hidden = false; renderLibrary(); }
+  $('#sync').textContent = state.mode === 'cloud' ? 'Saved to your account' : state.mode === 'local' ? 'This browser only' : 'Connecting…';
+}
+
+function renderLibrary() {
+  const songs = state.songs.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  const nWords = songs.reduce((n, s) => n + (s.words ? s.words.length : 0), 0);
+  $('#lib-stats').textContent = state.loaded
+    ? plural(songs.length, 'folder', 'folders') + ' · ' + plural(nWords, 'word', 'words')
+    : 'Loading your collection…';
+
+  const notice = $('#notice');
+  if (state.mode === 'local' && state.loaded) {
+    notice.hidden = false;
+    notice.textContent = 'Saving to your account is not available right now. Your folders are stored in this browser only.';
+  } else if (state.slow) {
+    notice.hidden = false;
+    notice.textContent = 'Your library cannot be reached yet. What you see may be out of date.';
+  } else notice.hidden = true;
+
+  const langs = [...new Set(songs.map((s) => s.language).filter(Boolean))];
+  if (state.lang && !langs.includes(state.lang)) state.lang = '';
+  $('#chips').replaceChildren(...(langs.length > 1 ? ['', ...langs] : []).map((l) =>
+    h('button', { type: 'button', class: 'chip', 'aria-pressed': String(state.lang === l), onclick: () => { state.lang = l; renderLibrary(); } }, l || 'All')));
+
+  const q = state.q.trim().toLowerCase();
+  const list = songs.filter((s) => {
+    if (state.lang && s.language !== state.lang) return false;
+    if (!q) return true;
+    const hay = [s.title, s.artist, ...(s.words || []).flatMap((w) => [w.term, w.meaning])].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+
+  const grid = $('#grid'), empty = $('#empty');
+  if (!state.loaded) {
+    grid.replaceChildren(...[1, 2, 3, 4].map(skeletonEl)); empty.hidden = true; return;
+  }
+  grid.replaceChildren(...list.map(cardEl));
+  if (!songs.length) {
+    empty.hidden = false;
+    $('#empty-title').textContent = 'Your shelf is empty';
+    $('#empty-text').textContent = 'Create one folder per song, paste the lyrics, and save the new words you want to learn.';
+    $('#empty-actions').hidden = false;
+  } else if (!list.length) {
+    empty.hidden = false;
+    $('#empty-title').textContent = 'Nothing matches';
+    $('#empty-text').textContent = 'Try another search or clear the language filter.';
+    $('#empty-actions').hidden = true;
+  } else empty.hidden = true;
+}
+
+function termRegex(words) {
+  const terms = words.map((w) => (w.term || '').trim()).filter(Boolean).sort((a, b) => b.length - a.length).map(escapeRe);
+  if (!terms.length) return null;
+  return new RegExp('(?<![\\p{L}\\p{N}])(' + terms.join('|') + ')(?![\\p{L}\\p{N}])', 'giu');
+}
+function splitByRe(line, re) {
+  if (!re) return [{ t: line }];
+  re.lastIndex = 0;
+  const out = []; let last = 0, m;
+  while ((m = re.exec(line))) {
+    if (m[0].length === 0) { re.lastIndex++; continue; }
+    if (m.index > last) out.push({ t: line.slice(last, m.index) });
+    out.push({ t: m[0], hit: m[0] });
+    last = m.index + m[0].length;
+  }
+  if (last < line.length) out.push({ t: line.slice(last) });
+  return out;
+}
+
+function renderSong(s) {
+  $('#s-art').replaceChildren(artEl(s));
+  $('#s-title').textContent = s.title;
+  $('#s-artist').textContent = s.artist || 'Unknown artist';
+  $('#s-tags').replaceChildren(
+    s.language ? h('span', { class: 'tag', text: s.language }) : null,
+    h('span', { class: 'tag' + (s.status === 'learned' ? ' ok' : ''), text: s.status === 'learned' ? 'Learned' : 'Learning' }));
+  const words = s.words || [];
+  const done = words.filter((w) => w.learned).length;
+  $('#s-bar').style.width = (words.length ? Math.round((done / words.length) * 100) : 0) + '%';
+  $('#s-meter-text').textContent = done + ' of ' + words.length + ' words learned';
+  $('#btn-learned').textContent = s.status === 'learned' ? 'Back to learning' : 'I know this song';
+  $('#tab-words-label').textContent = 'Words (' + words.length + ')';
+
+  document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === state.tab)));
+  ['lyrics', 'words', 'practice'].forEach((t) => { $('#tab-' + t).hidden = state.tab !== t; });
+  if (state.tab !== 'lyrics') $('#btn-pick').hidden = true;
+
+  renderLyrics(s); renderWords(s); renderPractice(s);
+}
+
+function renderLyrics(s) {
+  const body = $('#lyrics-body');
+  const text = (s.lyrics || '').trim();
+  if (!text) {
+    body.replaceChildren(h('div', { class: 'empty-sm' },
+      h('p', { text: 'This folder has no lyrics yet.' }),
+      h('button', { class: 'btn', type: 'button', style: 'margin-top:12px', onclick: () => openEditor(s) }, 'Paste the lyrics')));
+    return;
+  }
+  const words = s.words || [];
+  const re = termRegex(words);
+  const wrap = h('div', { class: 'lyrics', id: 'lyrics-text' });
+  (s.lyrics || '').split(/\r?\n/).forEach((line) => {
+    if (!line.trim()) { wrap.append(h('div', { class: 'gap' })); return; }
+    const p = h('p', { class: 'line' });
+    splitByRe(line, re).forEach((seg) => {
+      if (!seg.hit) { p.append(seg.t); return; }
+      const w = words.find((x) => (x.term || '').trim().toLowerCase() === seg.hit.toLowerCase());
+      const mark = h('mark', { class: 'vocab', tabindex: '0', role: 'button', title: w ? w.meaning : '' }, seg.t);
+      const toggle = () => {
+        const next = mark.nextElementSibling;
+        if (next && next.classList.contains('gloss')) next.remove();
+        else mark.after(h('span', { class: 'gloss', text: (w && w.meaning) || 'No meaning yet' }));
+      };
+      mark.addEventListener('click', toggle);
+      mark.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+      p.append(mark);
+    });
+    wrap.append(p);
+  });
+  body.replaceChildren(wrap);
+}
+
+function renderWords(s) {
+  const list = $('#word-list');
+  const words = s.words || [];
+  if (!words.length) {
+    list.replaceChildren(h('p', { class: 'empty-sm', text: 'No words yet. Save the first one above, or select it in the lyrics.' }));
+    return;
+  }
+  list.replaceChildren(...words.map((w) => h('article', { class: 'word' + (w.learned ? ' done' : '') },
+    h('div', null,
+      h('h4', { text: w.term }),
+      h('p', { class: 'meaning', text: w.meaning || 'No meaning yet' }),
+      w.note ? h('p', { class: 'note', text: w.note }) : null),
+    h('div', { class: 'word-actions' },
+      h('button', { type: 'button', class: 'icon-btn', 'aria-pressed': String(!!w.learned), onclick: () => setLearned(w.id, !w.learned) }, w.learned ? '✓ Known' : 'Learning'),
+      h('button', { type: 'button', class: 'icon-btn danger', 'aria-label': 'Delete ' + w.term, onclick: () => removeWord(w.id) }, 'Remove')))));
+}
+function setLearned(id, val) { mutate((c) => { const w = (c.words || []).find((x) => x.id === id); if (w) w.learned = val; }); }
+function removeWord(id) { mutate((c) => { c.words = (c.words || []).filter((x) => x.id !== id); }); }
+
+/* ---------- practice ---------- */
+function renderPractice(s) {
+  document.querySelectorAll('[data-practice]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.practice === state.practice)));
+  $('#practice-body').replaceChildren(state.practice === 'cards' ? cardsView(s) : clozeView(s));
+}
+function cardsView(s) {
+  const words = s.words || [];
+  if (!words.length) return h('p', { class: 'empty-sm', text: 'Save a few words to practice with flashcards.' });
+  const deck = state.deckPending ? words.filter((w) => !w.learned) : words;
+  const cb = h('input', { type: 'checkbox', id: 'deck-toggle', onchange: (e) => { state.deckPending = e.target.checked; state.cardIdx = 0; state.flipped = false; renderPractice(s); } });
+  cb.checked = state.deckPending;
+  const toggle = h('label', { class: 'check' }, cb, 'Only words I do not know yet');
+  if (!deck.length) {
+    return h('div', { class: 'empty-sm' },
+      h('p', { text: 'You know every word in this song.' }),
+      h('div', { style: 'margin-top:12px' }, toggle));
+  }
+  if (state.cardIdx >= deck.length) state.cardIdx = 0;
+  const w = deck[state.cardIdx];
+  const card = h('button', { type: 'button', class: 'flash' + (state.flipped ? ' flipped' : ''), onclick: () => { state.flipped = !state.flipped; renderPractice(s); } },
+    state.flipped
+      ? [h('span', { class: 'big', text: w.meaning || 'No meaning yet' }), w.note ? h('span', { text: w.note }) : null, h('span', { class: 'hint', text: w.term })]
+      : [h('span', { class: 'big', text: w.term }), h('span', { class: 'hint', text: 'Tap to see the meaning' })]);
+  return h('div', null, card,
+    h('div', { class: 'flash-controls' },
+      h('span', { class: 'mono muted', text: (state.cardIdx + 1) + ' of ' + deck.length }),
+      h('span', { class: 'grow' }),
+      toggle,
+      h('button', { class: 'btn', type: 'button', onclick: () => answer(w.id, false) }, 'Review again'),
+      h('button', { class: 'btn primary', type: 'button', onclick: () => answer(w.id, true) }, 'I know it')));
+}
+function answer(id, learned) {
+  state.flipped = false;
+  if (!(learned && state.deckPending)) state.cardIdx++;
+  setLearned(id, learned);
+}
+function clozeView(s) {
+  const text = (s.lyrics || '').trim();
+  const sel = h('select', { id: 'cloze-mode', 'aria-label': 'What to hide', style: 'width:auto', onchange: (e) => { state.cloze = e.target.value; state.revealed = new Set(); state.allShown = false; renderPractice(s); } },
+    h('option', { value: 'vocab' }, 'Hide my saved words'),
+    h('option', { value: 'n5' }, 'Hide 1 in every 5 words'),
+    h('option', { value: 'n3' }, 'Hide 1 in every 3 words'));
+  sel.value = state.cloze;
+  const controls = h('div', { class: 'modes' }, sel,
+    h('button', { class: 'btn small', type: 'button', onclick: () => { state.allShown = !state.allShown; state.revealed = new Set(); renderPractice(s); } }, state.allShown ? 'Hide again' : 'Show all'));
+  if (!text) return h('div', null, h('p', { class: 'empty-sm', text: 'Paste the lyrics to practice with gaps.' }));
+  const re = state.cloze === 'vocab' ? termRegex(s.words || []) : null;
+  if (state.cloze === 'vocab' && !re) return h('div', null, controls, h('p', { class: 'empty-sm', text: 'Save some words to hide them in the lyrics, or choose to hide one in every few words.' }));
+  const n = state.cloze === 'n3' ? 3 : state.cloze === 'n5' ? 5 : 0;
+  let counter = 0;
+  const wrap = h('div', { class: 'lyrics' });
+  (s.lyrics || '').split(/\r?\n/).forEach((line, li) => {
+    if (!line.trim()) { wrap.append(h('div', { class: 'gap' })); return; }
+    const p = h('p', { class: 'line' });
+    let segs;
+    if (n) {
+      segs = [];
+      line.split(/(\p{L}[\p{L}\p{N}'’-]*)/u).forEach((t) => {
+        if (!t) return;
+        if (/^\p{L}/u.test(t)) { counter++; segs.push({ t, hide: counter % n === 0 && t.length > 2 }); } else segs.push({ t });
+      });
+    } else segs = splitByRe(line, re).map((x) => ({ t: x.t, hide: !!x.hit }));
+    segs.forEach((sg, si) => {
+      if (!sg.hide) { p.append(sg.t); return; }
+      const key = li + ':' + si;
+      if (state.allShown || state.revealed.has(key)) { p.append(h('mark', { class: 'vocab' }, sg.t)); return; }
+      const b = h('button', { type: 'button', class: 'blank', 'aria-label': 'Hidden word, tap to reveal', onclick: () => { state.revealed.add(key); renderPractice(s); } }, ' ');
+      b.style.minWidth = Math.max(3, sg.t.length) + 'ch';
+      p.append(b);
+    });
+    wrap.append(p);
+  });
+  return h('div', null, controls, wrap);
+}
+
+/* ---------- editor dialog ---------- */
+function updatePrev() {
+  const prev = $('#f-prev');
+  prev.style.setProperty('--hue', hueOf(state.editHue));
+  prev.style.backgroundImage = state.coverData ? 'url("' + state.coverData + '")' : '';
+  const title = $('#f-title').value.trim();
+  prev.textContent = state.coverData ? '' : (title ? title.charAt(0).toUpperCase() : '♪');
+}
+function openModal(el) { lastFocus = document.activeElement; el.hidden = false; }
+function closeModal(el) { el.hidden = true; if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} } }
+function openEditor(song) {
+  state.editing = song ? song.id : null;
+  state.coverData = song ? (song.cover || '') : '';
+  state.editHue = song ? (song.hue || 230) : Math.floor(Math.random() * 90) + 190;
+  $('#modal-title').textContent = song ? 'Edit folder' : 'New folder';
+  $('#f-title').value = song ? song.title : '';
+  $('#f-artist').value = song ? (song.artist || '') : '';
+  $('#f-lang').value = song ? (song.language || '') : '';
+  $('#f-lyrics').value = song ? (song.lyrics || '') : '';
+  $('#f-cover').value = '';
+  updatePrev();
+  openModal($('#modal'));
+  $('#f-title').focus();
+}
+function fileToCover(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const side = Math.min(img.width, img.height);
+      const c = document.createElement('canvas'); c.width = c.height = 480;
+      c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, 480, 480);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('image')); };
+    img.src = url;
+  });
+}
+
+function addSample() {
+  const s = {
+    id: uid('s'), title: 'Moonlight Walk (sample)', artist: 'Sample lyrics', language: 'English', hue: 250, cover: '',
+    lyrics: 'Walking home beneath the pale moonlight\nThe streetlamps hum a quiet tune\nI carry all my worries like a lantern\nAnd let them fade away by noon\n\nEvery step is soft upon the pavement\nThe river whispers back to me\nI am learning how to let the silence\nSing the things I cannot see',
+    words: [
+      { id: uid('w'), term: 'pale', meaning: 'light in color, not bright', note: 'The pale sky turned orange at sunset.', learned: false },
+      { id: uid('w'), term: 'hum', meaning: 'to make a low, steady sound', note: '', learned: false },
+      { id: uid('w'), term: 'lantern', meaning: 'a portable light with a cover', note: '', learned: true },
+      { id: uid('w'), term: 'fade away', meaning: 'to slowly disappear', note: 'Her voice began to fade away.', learned: false }
+    ],
+    status: 'learning', createdAt: Date.now()
+  };
+  putSong(s);
+  location.hash = '#song-' + s.id;
+}
+
+/* ---------- events ---------- */
+function bind() {
+  $('#btn-new').addEventListener('click', () => openEditor(null));
+  $('#btn-new-2').addEventListener('click', () => openEditor(null));
+  $('#btn-sample').addEventListener('click', addSample);
+  $('#q').addEventListener('input', (e) => { state.q = e.target.value; renderLibrary(); });
+
+  $('#f-cancel').addEventListener('click', () => closeModal($('#modal')));
+  $('#f-title').addEventListener('input', updatePrev);
+  $('#f-cover').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    fileToCover(f).then((d) => { state.coverData = d; updatePrev(); }).catch(() => toast('Could not read that image.'));
+  });
+  $('#f-cover-remove').addEventListener('click', () => { state.coverData = ''; $('#f-cover').value = ''; updatePrev(); });
+  $('#song-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = $('#f-title').value.trim();
+    if (!title) { $('#f-title').focus(); return; }
+    const fields = { title, artist: $('#f-artist').value.trim(), language: $('#f-lang').value.trim(), lyrics: $('#f-lyrics').value, cover: state.coverData };
+    if (state.editing) {
+      const s = state.songs.find((x) => x.id === state.editing); if (!s) { closeModal($('#modal')); return; }
+      putSong(Object.assign(clone(s), fields));
+      closeModal($('#modal')); toast('Folder updated');
+    } else {
+      const s = Object.assign({ id: uid('s'), hue: state.editHue, words: [], status: 'learning', createdAt: Date.now() }, fields);
+      putSong(s);
+      closeModal($('#modal'));
+      location.hash = '#song-' + s.id;
+    }
+  });
+
+  $('#btn-edit').addEventListener('click', () => { const s = current(); if (s) openEditor(s); });
+  $('#btn-learned').addEventListener('click', () => mutate((c) => { c.status = c.status === 'learned' ? 'learning' : 'learned'; }));
+  $('#btn-del').addEventListener('click', () => {
+    const s = current(); if (!s) return;
+    $('#confirm-text').textContent = '“' + s.title + '”, its lyrics and its ' + plural(s.words ? s.words.length : 0, 'word', 'words') + ' will be deleted. This cannot be undone.';
+    openModal($('#confirm'));
+    $('#c-cancel').focus();
+  });
+  $('#c-cancel').addEventListener('click', () => closeModal($('#confirm')));
+  $('#c-ok').addEventListener('click', () => {
+    const id = currentId(); closeModal($('#confirm'));
+    if (id) { location.hash = '#library'; removeSong(id); toast('Folder deleted'); }
+  });
+
+  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => { state.tab = b.dataset.tab; render(); }));
+  document.querySelectorAll('[data-practice]').forEach((b) => b.addEventListener('click', () => {
+    state.practice = b.dataset.practice; state.revealed = new Set(); state.allShown = false; state.flipped = false; state.cardIdx = 0; render();
+  }));
+
+  $('#word-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const term = $('#w-term').value.trim();
+    if (!term) { $('#w-term').focus(); return; }
+    const meaning = $('#w-meaning').value.trim(), note = $('#w-note').value.trim();
+    mutate((c) => { c.words = c.words || []; c.words.unshift({ id: uid('w'), term, meaning, note, learned: false }); });
+    e.target.reset(); $('#w-term').focus();
+  });
+
+  $('#btn-pick').addEventListener('click', () => {
+    if (!state.pick) return;
+    state.tab = 'words'; render();
+    $('#w-term').value = state.pick; state.pick = '';
+    $('#btn-pick').hidden = true;
+    $('#w-meaning').focus();
+  });
+  document.addEventListener('selectionchange', () => {
+    const btn = $('#btn-pick');
+    if (state.tab !== 'lyrics' || $('#view-song').hidden) { btn.hidden = true; return; }
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().replace(/\s+/g, ' ').trim() : '';
+    const box = $('#lyrics-text');
+    if (text && text.length <= 60 && box && sel.anchorNode && box.contains(sel.anchorNode)) {
+      state.pick = text; btn.textContent = 'Save “' + text + '”'; btn.hidden = false;
+    } else if (document.activeElement !== btn) { btn.hidden = true; }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!$('#confirm').hidden) closeModal($('#confirm'));
+    else if (!$('#modal').hidden) closeModal($('#modal'));
+  });
+  window.addEventListener('hashchange', () => {
+    state.tab = 'lyrics'; state.practice = 'cards'; state.cardIdx = 0; state.flipped = false;
+    state.revealed = new Set(); state.allShown = false; state.cloze = 'vocab'; state.pick = '';
+    window.scrollTo(0, 0); render();
+  });
+}
+
+/* ---------- start ---------- */
+function fallbackLocal() {
+  col = null; state.mode = 'local'; state.slow = false; loadLocal(); state.loaded = true; render();
+}
+async function init() {
+  bind(); render();
+  try {
+    if (window.claude && window.claude.use) {
+      const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+      const id = user ? await user.id() : null;
+      if (db && id) {
+        col = db.collection('data/users/' + id);
+        state.mode = 'cloud';
+        const timer = setTimeout(() => { if (!state.loaded) { state.slow = true; state.loaded = true; render(); } }, 10000);
+        col.onSnapshot((snap) => {
+          if (snap.metadata.fromCache && snap.empty) return;
+          clearTimeout(timer); state.slow = false; state.loaded = true;
+          state.songs = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+          render();
+        }, (err) => { clearTimeout(timer); console.error(err); fallbackLocal(); });
+        return;
+      }
+    }
+  } catch (e) { console.error(e); }
+  fallbackLocal();
+}
+init();
+})();
+</script>
+
+</body></html>
